@@ -1,0 +1,73 @@
+resources:
+    med:
+        cpu: 4
+        mem: 16000
+        time: "02:00:00"
+    ram:
+        cpu: 2
+        mem: 8000
+        time: "04:00:00"
+koverage:
+    args:
+        output: "koverage.out/"
+        result: "koverage.out/results/"
+        reads: "test/reads/"
+        ref: "test/ref.fa"
+        log: "koverage.out/logs/"
+        log_file: "koverage.out/koverage.log"
+        bench: "koverage.out/bench/"
+        temp: "koverage.out/temp/"
+        paf_dir: "koverage.out/pafs/"
+        bin_width: 100
+        kmer_max: 5000
+        kmer_min: 50
+        kmer_sample: 100
+        kmer_size: 25
+        minimap: sr
+        pafs: false
+        report: true
+        report_max_ctg: 1000
+    container:
+        coverm:
+            "workflow/containers/koverage_coverm.sif"
+        minimap:
+            "oras://quay.io/beardymcjohnface/koverage_minimap:0.0.1"
+            # apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:0.0.1
+        jellyfish:
+            "workflow/containers/koverage_jellyfish.sif"
+        report:
+            "workflow/containers/koverage_report.sif"
+        zstd:
+            "workflow/containers/koverage_zstd.sif"
+    envmodules:
+        # FOR USE WITH --use-envmodules
+        # THESE NEED TO BE AVAILABLE ON YOUR SYSTEM, UPDATE VERSIONS ACCORDINGLY
+        # TALK TO YOUR HPC SYSADMINS IF YOU NEED THEM INSTALLED, OR USE CONDA OR APPTAINER/SINGULARITY/DOCKER/ETC INSTEAD
+        coverm:
+            - "coverm/0.6.1"
+        jellyfish:
+            - "jellyfish/2.2.10"
+        minimap:
+            - "minimap2/2.20"
+            - "samtools/1.13"
+        report:
+            - "python/3.13"
+            - "pandas"
+            - "plotly"
+            - "datapane"
+        zstd:
+            - "zstd/1.4"
+    params:
+        jellyfish:
+            -C 
+            -s 1G 
+            -c 2 
+            --out-counter-len=2 
+            -L 2
+        coverm:
+            -m count
+            -m rpkm
+            -m tpm
+            -m mean
+            -m covered_fraction
+            -m variance

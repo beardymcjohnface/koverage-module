@@ -1,0 +1,60 @@
+import sys
+import os
+
+
+# Config
+configfile: os.path.join(workflow.basedir, '../', 'config', 'config.yaml')
+configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml')
+
+
+# Rules
+include: os.path.join("rules", "preflight.smk")
+include: os.path.join("rules", "combine_refs.smk")
+include: os.path.join("rules", "coverage.smk")
+include: os.path.join("rules", "kmer_coverage.smk")
+include: os.path.join("rules", "coverm.smk")
+include: os.path.join("rules", "reports.smk")
+
+
+# Mark target rules
+target_rules = []
+def targetRule(fn):
+    assert fn.__name__.startswith('__')
+    target_rules.append(fn.__name__[2:])
+    return fn
+
+
+# Make targets
+@targetRule
+rule map:
+    input:
+        config["koverage"]["targets"]["pafs"],
+        config["koverage"]["targets"]["coverage"],
+        config["koverage"]["targets"]["reports"],
+
+
+@targetRule
+rule kmer:
+    input:
+        config["koverage"]["targets"]["kmercov"],
+        config["koverage"]["targets"]["reports"],
+
+
+@targetRule
+rule coverm:
+    input:
+        config["koverage"]["targets"]["coverm"],
+        config["koverage"]["targets"]["reports"],
+
+
+@targetRule
+rule build_envs:
+    input:
+        config["koverage"]["targets"]["envs"]
+
+
+@targetRule
+rule print_targets:
+    run:
+        print("\nTop level rules are: \n", file=sys.stderr)
+        print("* " + "\n* ".join(target_rules) + "\n\n", file=sys.stderr)
