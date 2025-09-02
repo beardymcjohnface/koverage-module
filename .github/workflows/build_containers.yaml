@@ -65,10 +65,10 @@ jobs:
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
         - name: Build koverage_coverm
           run: |
-            sudo apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
+            apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
-            sudo apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ github.ref_name }}
+            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.LAST_TAG }}
 
 
   build-koverage_jellyfish:
@@ -90,10 +90,10 @@ jobs:
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
         - name: Build koverage_jellyfish
           run: |
-            sudo apptainer build koverage_jellyfish.sif workflow/containers/koverage_jellyfish
+            apptainer build koverage_jellyfish.sif workflow/containers/koverage_jellyfish
         - name: Push koverage_jellyfish to Quay.io
           run: |
-            sudo apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ github.ref_name }}
+            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ env.LAST_TAG }}
 
 
   build-koverage_minimap:
@@ -115,11 +115,11 @@ jobs:
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
         - name: Build koverage_minimap
           run: |
-            sudo apptainer build koverage_minimap.sif workflow/containers/koverage_minimap
+            apptainer build koverage_minimap.sif workflow/containers/koverage_minimap
         - name: Push koverage_minimap to Quay.io
           run: |
-            sudo apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ github.ref_name }}
-
+            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ env.LAST_TAG }}
+            
 
   build-koverage_report:
       needs: check-for-changes
@@ -140,10 +140,10 @@ jobs:
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
         - name: Build koverage_report
           run: |
-            sudo apptainer build koverage_report.sif workflow/containers/koverage_report
+            apptainer build koverage_report.sif workflow/containers/koverage_report
         - name: Push koverage_report to Quay.io
           run: |
-            sudo apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ github.ref_name }}
+            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ env.LAST_TAG }}
 
 
   build-koverage_zstd:
@@ -165,7 +165,7 @@ jobs:
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
         - name: Build koverage_zstd
           run: |
-            sudo apptainer build koverage_zstd.sif workflow/containers/koverage_zstd
+            apptainer build koverage_zstd.sif workflow/containers/koverage_zstd
         - name: Push koverage_zstd to Quay.io
           run: |
-            sudo apptainer push koverage_zstd.sif oras://quay.io/beardymcjohnface/koverage_zstd:${{ github.ref_name }}
+            apptainer push koverage_zstd.sif oras://quay.io/beardymcjohnface/koverage_zstd:${{ env.LAST_TAG }}
