@@ -3,4 +3,4 @@ Bootstrap: docker
 From: continuumio/miniconda3
 
 %post
-    conda install -c conda-forge -c bioconda coverm=0.6.1
+    conda install -c conda-forge -c bioconda coverm=0.6.1 #

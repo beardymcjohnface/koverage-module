@@ -3,4 +3,4 @@ Bootstrap: docker
 From: continuumio/miniconda3
 
 %post
-    conda install -c conda-forge zstd=1.5.7
+    conda install -c conda-forge zstd=1.5.7 #
