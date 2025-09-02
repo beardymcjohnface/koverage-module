@@ -4,9 +4,3 @@ From: continuumio/miniconda3
 
 %post
     conda install -c conda-forge -c bioconda coverm=0.6.1
-    conda install -c conda-forge -c bioconda jellyfish=2.2.10
-    conda install -c conda-forge -c bioconda minimap2=2.30
-    conda install -c conda-forge -c bioconda samtools=1.22.1
-    conda install -c conda-forge zstd
-    conda install -c conda-forge pandas plotly datapane numpy
-    pip install metasnek
