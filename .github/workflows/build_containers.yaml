@@ -61,16 +61,18 @@ jobs:
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
-        - name: Set tag env
+        - name: Get and Set Current Tag
+          id: get_tag
           run: |
-            echo "TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
+            CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
+            echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
         - name: Build koverage_coverm
           run: |
             apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
-            echo "apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.TAG }}"
-            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.TAG }}
+            echo "apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}"
+            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}
 
 
   build-koverage_jellyfish:
