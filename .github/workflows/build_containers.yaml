@@ -60,7 +60,7 @@ jobs:
             #sudo apt install -y apptainer
         - name: Get and Set Current Tag
           run: |
-            git tag
+            echo "$(git tag)"
             #CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
             #echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
             #echo $CURRENT_TAG
