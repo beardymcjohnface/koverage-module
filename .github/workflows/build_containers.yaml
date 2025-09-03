@@ -18,7 +18,6 @@ jobs:
       img_jellyfish_changed: ${{ steps.filter.outputs.img_jellyfish }}
       img_minimap_changed: ${{ steps.filter.outputs.img_minimap }}
       img_report_changed: ${{ steps.filter.outputs.img_report }}
-      img_zstd_changed: ${{ steps.filter.outputs.img_zstd }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,8 +42,7 @@ jobs:
               - 'workflow/containers/koverage_minimap'
             img_report:
               - 'workflow/containers/koverage_report'
-            img_zstd:
-              - 'workflow/containers/koverage_zstd'
+
 
   build-koverage_coverm:
       needs: check-for-changes
@@ -68,7 +66,8 @@ jobs:
             apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
-            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.LAST_TAG }}
+            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
+            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:$LAST_TAG
 
 
   build-koverage_jellyfish:
@@ -93,7 +92,8 @@ jobs:
             apptainer build koverage_jellyfish.sif workflow/containers/koverage_jellyfish
         - name: Push koverage_jellyfish to Quay.io
           run: |
-            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ env.LAST_TAG }}
+            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
+            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:$LAST_TAG
 
 
   build-koverage_minimap:
@@ -118,7 +118,8 @@ jobs:
             apptainer build koverage_minimap.sif workflow/containers/koverage_minimap
         - name: Push koverage_minimap to Quay.io
           run: |
-            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ env.LAST_TAG }}
+            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
+            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:$LAST_TAG
             
 
   build-koverage_report:
@@ -143,29 +144,6 @@ jobs:
             apptainer build koverage_report.sif workflow/containers/koverage_report
         - name: Push koverage_report to Quay.io
           run: |
-            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ env.LAST_TAG }}
+            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
+            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:$LAST_TAG
 
-
-  build-koverage_zstd:
-      needs: check-for-changes
-      if: needs.check-for-changes.outputs.img_zstd_changed == 'true'
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-        - name: Install Apptainer
-          run: |
-            sudo apt update
-            sudo apt install -y software-properties-common
-            sudo add-apt-repository -y ppa:apptainer/ppa
-            sudo apt update
-            sudo apt install -y apptainer
-        - name: Log in to Quay.io
-          run: |
-            echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
-        - name: Build koverage_zstd
-          run: |
-            apptainer build koverage_zstd.sif workflow/containers/koverage_zstd
-        - name: Push koverage_zstd to Quay.io
-          run: |
-            apptainer push koverage_zstd.sif oras://quay.io/beardymcjohnface/koverage_zstd:${{ env.LAST_TAG }}
