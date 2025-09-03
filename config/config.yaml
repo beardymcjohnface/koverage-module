@@ -29,16 +29,13 @@ koverage:
         report_max_ctg: 1000
     container:
         coverm:
-            "workflow/containers/koverage_coverm.sif"
+            "oras://quay.io/beardymcjohnface/koverage_coverm:0.0.1"
         minimap:
             "oras://quay.io/beardymcjohnface/koverage_minimap:0.0.1"
-            # apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:0.0.1
         jellyfish:
-            "workflow/containers/koverage_jellyfish.sif"
+            "oras://quay.io/beardymcjohnface/koverage_jellyfish:0.0.1"
         report:
-            "workflow/containers/koverage_report.sif"
-        zstd:
-            "workflow/containers/koverage_zstd.sif"
+            "oras://quay.io/beardymcjohnface/koverage_report:0.0.1"
     envmodules:
         # FOR USE WITH --use-envmodules
         # THESE NEED TO BE AVAILABLE ON YOUR SYSTEM, UPDATE VERSIONS ACCORDINGLY
@@ -55,8 +52,6 @@ koverage:
             - "pandas"
             - "plotly"
             - "datapane"
-        zstd:
-            - "zstd/1.4"
     params:
         jellyfish:
             -C 

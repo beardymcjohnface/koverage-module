@@ -36,7 +36,7 @@ config["koverage"]["targets"] = dict()
 
 if config["koverage"]["args"]["pafs"]:
     config["koverage"]["targets"]["pafs"] = expand(
-        os.path.join(config["koverage"]["args"]["paf"],"{sample}.paf.gz"),
+        os.path.join(config["koverage"]["args"]["paf_dir"],"{sample}.paf.gz"),
         sample=config["koverage"]["samples"]["names"]
     )
 else:

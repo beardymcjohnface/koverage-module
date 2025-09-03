@@ -23,7 +23,7 @@ import numpy as np
 import os
 import logging
 import sys
-import zstandard as zstd
+import gzip
 import pickle
 
 
@@ -68,25 +68,23 @@ def worker_paf_writer(paf_queue, paf_dir, sample, chunk_size=100):
         paf_dir (str): dir for saving paf files
     """
 
-    cctx = zstd.ZstdCompressor()
     os.makedirs(paf_dir, exist_ok=True)
-    output_f = open(os.path.join(paf_dir, sample + ".paf.zst"), "wb")
+    output_f = gzip.open(os.path.join(paf_dir, sample + ".paf.gz"), "wt")
     lines = []
 
     while True:
         line = paf_queue.get()
         if line is None:
             break
-        lines.append(line.encode())
+        lines.append(line)
         if len(lines) >= chunk_size:
-            compressed_chunk = cctx.compress(b"".join(lines))
-            output_f.write(compressed_chunk)
+            for line in lines:
+                output_f.write(line)
             lines = []
 
     if lines:
-        compressed_chunk = cctx.compress(b"".join(lines))
-        output_f.write(compressed_chunk)
-        output_f.flush()
+        for line in lines:
+            output_f.write(line)
 
     output_f.close()
 
@@ -206,18 +204,6 @@ def start_workers(queue_counts, queue_paf, pipe_minimap, **kwargs):
 
 
 def main(**kwargs):
-    # if kwargs["pyspy"]:
-    #     subprocess.Popen(
-    #         [
-    #             "py-spy",
-    #             "record",
-    #             "-s",
-    #             "-o",
-    #             kwargs["pyspy_svg"],
-    #             "--pid",
-    #             str(os.getpid()),
-    #         ]
-    #     )
 
     logging.basicConfig(
         filename=kwargs["log_file"],
@@ -285,7 +271,4 @@ if __name__ == "__main__":
         sample=snakemake.wildcards.sample,
         bin_width=snakemake.params.bin_width,
         output_counts=snakemake.output.counts,
-        # output_lib=snakemake.output.lib,
-        # pyspy=snakemake.params.pyspy,
-        # pyspy_svg=snakemake.log.pyspy,
     )

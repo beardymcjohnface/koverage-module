@@ -28,7 +28,7 @@ def targetRule(fn):
 @targetRule
 rule map:
     input:
-        config["koverage"]["targets"]["pafs"],
+        #config["koverage"]["targets"]["pafs"],
         config["koverage"]["targets"]["coverage"],
         config["koverage"]["targets"]["reports"],
 
