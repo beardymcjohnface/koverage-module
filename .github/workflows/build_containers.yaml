@@ -66,8 +66,7 @@ jobs:
             apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
-            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:$LAST_TAG
+            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ github.ref_name }}
 
 
   build-koverage_jellyfish:
@@ -92,8 +91,7 @@ jobs:
             apptainer build koverage_jellyfish.sif workflow/containers/koverage_jellyfish
         - name: Push koverage_jellyfish to Quay.io
           run: |
-            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:$LAST_TAG
+            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ github.ref_name }}
 
 
   build-koverage_minimap:
@@ -118,8 +116,7 @@ jobs:
             apptainer build koverage_minimap.sif workflow/containers/koverage_minimap
         - name: Push koverage_minimap to Quay.io
           run: |
-            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:$LAST_TAG
+            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ github.ref_name }}
             
 
   build-koverage_report:
@@ -144,6 +141,5 @@ jobs:
             apptainer build koverage_report.sif workflow/containers/koverage_report
         - name: Push koverage_report to Quay.io
           run: |
-            LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:$LAST_TAG
+            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ github.ref_name }}
 
