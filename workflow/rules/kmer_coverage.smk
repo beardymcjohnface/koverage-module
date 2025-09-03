@@ -93,10 +93,6 @@ rule koverage_all_sample_kmer_coverage:
     output:
         config["koverage"]["args"]["samplekmers"]
     threads: 1
-    # conda:
-    #     os.path.join("..", "envs", "zstd.yaml")
-    # envmodules:
-    #     *config["koverage"]["envmodules"]["zstd"]
     log:
         os.path.join(config["koverage"]["args"]["log"], "all_sample_kmer_coverage.err")
     benchmark:

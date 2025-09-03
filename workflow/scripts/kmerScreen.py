@@ -5,14 +5,12 @@
 This script will parse the reference sampled kmers and query them from the sample jellyfish db
 
 - `trimmed_variance` - Calculate variance from a list of integers
-- `output_print_worker` - Take output lines from a queue and print to zstandard-compressed TSV
+- `output_print_worker` - Take output lines from a queue and print to gzip-compressed TSV
 - `process_counts` - Process the kmer depths of the ref sampled kmers and the sample jellyfish database
 """
 
 
-import os
 import subprocess
-import io
 import threading
 import queue
 import logging
@@ -100,10 +98,10 @@ def process_counts(kmer_counts, sample_name, contig_name):
 def ref_kmer_parser_worker(
     ref_kmers=None, jellyfish_db=None, out_queue=None, sample_name=None, cmd=None
 ):
-    """Parse the processed reference kmer file (zstd-compressed) and query kmers from the Jellyfish database.
+    """Parse the processed reference kmer file (gz-compressed) and query kmers from the Jellyfish database.
 
     Args:
-        ref_kmers (str): Filepath of the sampled kmers from ref fasta (zstd-compressed; "contigID\tkmer\tkmer\tkmer...")
+        ref_kmers (str): Filepath of the sampled kmers from ref fasta (gz-compressed; "contigID\tkmer\tkmer\tkmer...")
         jellyfish_db (str): Filepath of the jellyfish database for the sample
         out_queue (Queue): Queue of the lines of output for compression and writing to the output file.
         sample_name (str): Name of the sample

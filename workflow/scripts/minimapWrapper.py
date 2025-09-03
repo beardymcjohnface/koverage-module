@@ -9,7 +9,7 @@ PAF files of alignments can optionally be saved.
 
 - `worker_mm_to_count_paf_queues` - read minimap2 output and pass to queues for processing and saving PAF
 - `worker_mm_to_count_queues` - read minimap2 output and pass to queue for processing only
-- `worker_paf_writer` - read minimap2 output from queue and write to zstandard-zipped file
+- `worker_paf_writer` - read minimap2 output from queue and write to gzip-zipped file
 - `worker_count_and_print` - read minimap2 output from queue, calculate counts, print to output files
 - `build_mm2cmd` - return the minimap2 command based on presence of R2 file
 - `start_workers` - start queues and worker threads
@@ -61,7 +61,7 @@ def worker_mm_to_count_queues(pipe, count_queue):
 
 
 def worker_paf_writer(paf_queue, paf_dir, sample, chunk_size=100):
-    """Read minimap2 output from queue and write to zstd-zipped file
+    """Read minimap2 output from queue and write to gz-zipped file
 
     Args:
         paf_queue (Queue): queue of minimap2 output for reading

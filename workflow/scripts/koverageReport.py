@@ -128,18 +128,6 @@ def generate_figure(all_df, ref_fa, buttons):
 
 
 def main(**kwargs):
-    # if kwargs["pyspy"]:
-    #     subprocess.Popen(
-    #         [
-    #             "py-spy",
-    #             "record",
-    #             "-s",
-    #             "-o",
-    #             kwargs["pyspy_svg"],
-    #             "--pid",
-    #             str(os.getpid()),
-    #         ]
-    #     )
     # Read in data frames
     sample_df = pd.read_csv(kwargs["sample_cov"], sep="\t")
     all_df = pd.read_csv(kwargs["all_cov"], sep="\t")
@@ -190,7 +178,5 @@ if __name__ == "__main__":
         all_cov_desc=snakemake.params.all_cov_desc,
         sample_names=snakemake.params.sample_names,
         ref_fasta=snakemake.params.ref_fasta,
-        max_ctg=snakemake.params.max_ctg,
-        # pyspy=snakemake.params.pyspy,
-        # pyspy_svg=snakemake.log.pyspy,
+        max_ctg=snakemake.params.max_ctg
     )

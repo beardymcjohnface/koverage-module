@@ -9,7 +9,7 @@ This script will parse the reference FASTA and sample kmers from each contig.
 - `contigs_to_queue` - Parse the fasta file and populate the processing queue with the id and sequence
 - `string_to_kmers` - Sample kmers from a sequence
 - `process_contigs` - Parse the processing queue, get sampled kmers, push output lines to writing queue
-- `output_printer` - Print the output lines to zstandard-zipped file
+- `output_printer` - Print the output lines to gzip-zipped file
 """
 
 
@@ -18,8 +18,6 @@ import queue
 import logging
 import gzip
 import time
-import os
-import subprocess
 
 
 def parse_fasta(file):
@@ -123,7 +121,7 @@ def process_contigs(in_queue, out_queue, **kwargs):
 
 
 def output_printer(queue, outfile, chunk_size=1000):
-    """Print the output lines to zstandard-zipped file
+    """Print the output lines to gzip-zipped file
 
     Args:
         queue (Queue): Queue of output lines for writing

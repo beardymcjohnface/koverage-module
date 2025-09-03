@@ -11,8 +11,6 @@ This script will take the coverage information from each samples' coverage file 
 
 
 import logging
-import os
-import subprocess
 
 
 def collect_coverage_stats(input_file):
@@ -84,18 +82,6 @@ def print_sample_coverage(output_file, all_coverage):
 
 
 def main(input_file, output_file, log_file, **kwargs):
-    # if kwargs["pyspy"]:
-    #     subprocess.Popen(
-    #         [
-    #             "py-spy",
-    #             "record",
-    #             "-s",
-    #             "-o",
-    #             kwargs["pyspy_svg"],
-    #             "--pid",
-    #             str(os.getpid()),
-    #         ]
-    #     )
     logging.basicConfig(filename=log_file, filemode="w", level=logging.DEBUG)
     logging.debug("Collecting combined coverage stats")
     all_coverage = collect_coverage_stats(input_file)
@@ -107,7 +93,5 @@ if __name__ == "__main__":
     main(
         snakemake.input[0],
         snakemake.output.all_cov,
-        snakemake.log[0],
-        # pyspy=snakemake.params.pyspy,
-        # pyspy_svg=snakemake.log.pyspy,
+        snakemake.log[0]
     )
