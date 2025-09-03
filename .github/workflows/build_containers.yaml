@@ -57,7 +57,7 @@ jobs:
             sudo apt install -y software-properties-common
             sudo add-apt-repository -y ppa:apptainer/ppa
             sudo apt update
-            sudo apt install -y apptainer
+            #sudo apt install -y apptainer
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
@@ -66,13 +66,14 @@ jobs:
           run: |
             CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
             echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+            echo $CURRENT_TAG
         - name: Build koverage_coverm
           run: |
-            apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
+            #apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
             echo "apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}"
-            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}
+            #apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}
 
 
   build-koverage_jellyfish:
@@ -141,10 +142,10 @@ jobs:
         - name: Install Apptainer
           run: |
             sudo apt update
-            sudo apt install -y software-properties-common
-            sudo add-apt-repository -y ppa:apptainer/ppa
-            sudo apt update
-            sudo apt install -y apptainer
+            #sudo apt install -y software-properties-common
+            #sudo add-apt-repository -y ppa:apptainer/ppa
+            #sudo apt update
+            #sudo apt install -y apptainer
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
@@ -153,8 +154,8 @@ jobs:
             echo "TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
         - name: Build koverage_report
           run: |
-            apptainer build koverage_report.sif workflow/containers/koverage_report
+            #apptainer build koverage_report.sif workflow/containers/koverage_report
         - name: Push koverage_report to Quay.io
           run: |
-            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ env.TAG }}
+            #apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ env.TAG }}
 
