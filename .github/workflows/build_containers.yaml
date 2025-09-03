@@ -23,11 +23,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Get latest tag
         id: get_tag
-        run: echo "LAST_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
-
+        run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Check for changes in container recipes
         id: filter
         uses: dorny/paths-filter@v3
@@ -60,11 +58,9 @@ jobs:
             sudo add-apt-repository -y ppa:apptainer/ppa
             sudo apt update
             sudo apt install -y apptainer
-        - name: Get and Set Current Tag
-          run: |
-            CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
-            echo $CURRENT_TAG
+        - name: Get latest tag
+          id: get_tag
+          run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
@@ -73,8 +69,8 @@ jobs:
             apptainer build koverage_coverm.sif workflow/containers/koverage_coverm
         - name: Push koverage_coverm to Quay.io
           run: |
-            echo "apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}"
-            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ steps.get_tag.outputs.tag }}
+            echo "apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.LAST_TAG }}"
+            apptainer push koverage_coverm.sif oras://quay.io/beardymcjohnface/koverage_coverm:${{ env.LAST_TAG }}
 
 
   build-koverage_jellyfish:
@@ -93,23 +89,18 @@ jobs:
             sudo add-apt-repository -y ppa:apptainer/ppa
             sudo apt update
             sudo apt install -y apptainer
-        - name: Get and Set Current Tag
-          run: |
-            CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
-            echo $CURRENT_TAG
+        - name: Get latest tag
+          id: get_tag
+          run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
-        - name: Set tag env
-          run: |
-            echo "TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
         - name: Build koverage_jellyfish
           run: |
             apptainer build koverage_jellyfish.sif workflow/containers/koverage_jellyfish
         - name: Push koverage_jellyfish to Quay.io
           run: |
-            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ steps.get_tag.outputs.tag }}
+            apptainer push koverage_jellyfish.sif oras://quay.io/beardymcjohnface/koverage_jellyfish:${{ env.LAST_TAG }}
 
 
   build-koverage_minimap:
@@ -128,23 +119,18 @@ jobs:
             sudo add-apt-repository -y ppa:apptainer/ppa
             sudo apt update
             sudo apt install -y apptainer
-        - name: Get and Set Current Tag
-          run: |
-            CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
-            echo $CURRENT_TAG
+        - name: Get latest tag
+          id: get_tag
+          run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
-        - name: Set tag env
-          run: |
-            echo "TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
         - name: Build koverage_minimap
           run: |
             apptainer build koverage_minimap.sif workflow/containers/koverage_minimap
         - name: Push koverage_minimap to Quay.io
           run: |
-            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ steps.get_tag.outputs.tag }}
+            apptainer push koverage_minimap.sif oras://quay.io/beardymcjohnface/koverage_minimap:${{ env.LAST_TAG }}
             
 
   build-koverage_report:
@@ -163,21 +149,15 @@ jobs:
             sudo add-apt-repository -y ppa:apptainer/ppa
             sudo apt update
             sudo apt install -y apptainer
-        - name: Get and Set Current Tag
-          run: |
-            CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
-            echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
-            echo $CURRENT_TAG
+        - name: Get latest tag
+          id: get_tag
+          run: echo "LAST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
         - name: Log in to Quay.io
           run: |
             echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
-        - name: Set tag env
-          run: |
-            echo "TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)" >> $GITHUB_ENV
         - name: Build koverage_report
           run: |
             apptainer build koverage_report.sif workflow/containers/koverage_report
         - name: Push koverage_report to Quay.io
           run: |
-            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ steps.get_tag.outputs.tag }}
-
+            apptainer push koverage_report.sif oras://quay.io/beardymcjohnface/koverage_report:${{ env.LAST_TAG }}
