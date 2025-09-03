@@ -64,7 +64,7 @@ jobs:
             #CURRENT_TAG=$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/ | head -1)
             #echo "tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
             #echo $CURRENT_TAG
-            echo "$(git for-each-ref --sort='-committerdate' --format='%(refname:lstrip=2)' refs/tags/)"
+            echo "$(git for-each-ref refs/tags/)"
         - name: Log in to Quay.io
           run: |
             #echo "${{ secrets.QUAY_PASSWORD }}" | apptainer remote login --username "${{ secrets.QUAY_USERNAME }}" oras://quay.io
