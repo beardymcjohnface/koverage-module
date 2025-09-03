@@ -3,4 +3,4 @@ Bootstrap: docker
 From: python:3.10
 
 %post
-    pip install pandas==1.5.3 plotly==6.3 datapane==0.17 numpy==1.26 metasnek==0.0.8 #
+    pip install pandas==1.5.3 plotly==6.3 datapane==0.17 numpy==1.26 metasnek==0.0.8
