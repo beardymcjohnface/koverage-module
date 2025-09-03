@@ -63,7 +63,7 @@ rule koverage_kmer_screen:
         ref = config["koverage"]["args"]["refkmers"],
         db = os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer")
     output:
-        temp(os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.zst"))
+        temp(os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.gz"))
     threads:
         config["resources"]["med"]["cpu"]
     resources:
@@ -86,17 +86,17 @@ rule koverage_all_sample_kmer_coverage:
         expand(
             os.path.join(
                 config["koverage"]["args"]["temp"],
-                "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.zst"
+                "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.gz"
             ),
             sample=config["koverage"]["samples"]["names"]
         )
     output:
         config["koverage"]["args"]["samplekmers"]
     threads: 1
-    conda:
-        os.path.join("..", "envs", "zstd.yaml")
-    envmodules:
-        *config["koverage"]["envmodules"]["zstd"]
+    # conda:
+    #     os.path.join("..", "envs", "zstd.yaml")
+    # envmodules:
+    #     *config["koverage"]["envmodules"]["zstd"]
     log:
         os.path.join(config["koverage"]["args"]["log"], "all_sample_kmer_coverage.err")
     benchmark:
@@ -104,7 +104,7 @@ rule koverage_all_sample_kmer_coverage:
     shell:
         ("{{ "
             "printf 'Sample\tContig\tSum\tMean\tMedian\tHitrate\tVariance\n' 2> {log}; "
-            "zstdcat {input} 2> {log}; "
+            "zcat {input} 2> {log}; "
         "}} | gzip -1 - > {output} ")
 
 
