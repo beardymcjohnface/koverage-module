@@ -36,7 +36,7 @@ config["koverage"]["targets"] = dict()
 
 if config["koverage"]["args"]["pafs"]:
     config["koverage"]["targets"]["pafs"] = expand(
-        os.path.join(config["koverage"]["args"]["paf"],"{sample}.paf.zst"),
+        os.path.join(config["koverage"]["args"]["paf"],"{sample}.paf.gz"),
         sample=config["koverage"]["samples"]["names"]
     )
 else:
@@ -63,7 +63,7 @@ config["koverage"]["targets"]["reports"] = [
 # KMER FILES
 config["koverage"]["args"]["refkmers"] = os.path.join(
     config["koverage"]["args"]["temp"],
-    os.path.basename(config["koverage"]["args"]["ref"]) + "." + str(config["koverage"]["args"]["kmer_size"]) + "mer.zst"
+    os.path.basename(config["koverage"]["args"]["ref"]) + "." + str(config["koverage"]["args"]["kmer_size"]) + "mer.gz"
 )
 config["koverage"]["args"]["samplekmers"] = os.path.join(
     config["koverage"]["args"]["result"], "sample_kmer_coverage." + str(config["koverage"]["args"]["kmer_size"]) + "mer.tsv.gz"

@@ -15,9 +15,8 @@ This script will parse the reference FASTA and sample kmers from each contig.
 
 import threading
 import queue
-import gzip
 import logging
-import zstandard as zstd
+import gzip
 import time
 import os
 import subprocess
@@ -131,8 +130,7 @@ def output_printer(queue, outfile, chunk_size=1000):
         outfile (str): Output file for writing
         chunk_size (int): number of lines to compress and write at a time
     """
-    cctx = zstd.ZstdCompressor()
-    with open(outfile, "wb") as outfh:
+    with gzip.open(outfile, "wt") as outfh:
         lines = []
         while True:
             item = queue.get()
@@ -140,27 +138,15 @@ def output_printer(queue, outfile, chunk_size=1000):
                 break
             lines.append(item)
             if len(lines) >= chunk_size:
-                compressed_chunk = cctx.compress("".join(lines).encode())
-                outfh.write(compressed_chunk)
+                for line in lines:
+                    outfh.write(line)
                 lines = []
         if lines:
-            compressed_chunk = cctx.compress("".join(lines).encode())
-            outfh.write(compressed_chunk)
+            for line in lines:
+                outfh.write(line)
 
 
 def main(**kwargs):
-    # if kwargs["pyspy"]:
-    #     subprocess.Popen(
-    #         [
-    #             "py-spy",
-    #             "record",
-    #             "-s",
-    #             "-o",
-    #             kwargs["pyspy_svg"],
-    #             "--pid",
-    #             str(os.getpid()),
-    #         ]
-    #     )
     logging.basicConfig(filename=kwargs["log_file"], filemode="w", level=logging.DEBUG)
     # create queue
     contig_queue = queue.Queue()
@@ -207,6 +193,4 @@ if __name__ == "__main__":
         kspace=snakemake.params.kspace,
         kmin=snakemake.params.kmin,
         kmax=snakemake.params.kmax,
-        # pyspy=snakemake.params.pyspy,
-        # pyspy_svg=snakemake.log.pyspy,
     )

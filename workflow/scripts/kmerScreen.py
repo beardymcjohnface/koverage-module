@@ -16,7 +16,7 @@ import io
 import threading
 import queue
 import logging
-import zstandard as zstd
+import gzip
 import numpy as np
 import sys
 
@@ -45,8 +45,7 @@ def output_print_worker(out_queue=None, out_file=None):
         out_queue (Queue): Queue with lines for printing to output file
         out_file (str): Output file for writing gzipped output
     """
-    cctx = zstd.ZstdCompressor()
-    with open(out_file, "wb") as out_fh:
+    with gzip.open(out_file, "wt") as out_fh:
         chunk_size = 100
         lines = []
         while True:
@@ -55,12 +54,12 @@ def output_print_worker(out_queue=None, out_file=None):
                 break
             lines.append(item)
             if len(lines) >= chunk_size:
-                compressed_chunk = cctx.compress("".join(lines).encode())
-                out_fh.write(compressed_chunk)
-                lines = []
+                for line in lines:
+                    out_fh.write(line)
+                    lines = []
         if lines:
-            compressed_chunk = cctx.compress("".join(lines).encode())
-            out_fh.write(compressed_chunk)
+            for line in lines:
+                out_fh.write(line)
 
 
 def process_counts(kmer_counts, sample_name, contig_name):
@@ -116,23 +115,20 @@ def ref_kmer_parser_worker(
     pipe_jellyfish = subprocess.Popen(
         cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
     )
-    with open(ref_kmers, "rb") as in_fh:
-        dctx = zstd.ZstdDecompressor()
-        with dctx.stream_reader(in_fh) as reader:
-            wrap = io.TextIOWrapper(io.BufferedReader(reader), encoding="utf8")
-            for line in wrap:
-                line = line.strip()
-                l = line.strip().split()
-                kmer_counts = list()
-                for k in l[1:]:
-                    k += "\n"
-                    pipe_jellyfish.stdin.write(k.encode())
-                pipe_jellyfish.stdin.flush()
-                for _ in l[1:]:
-                    kmer_counts.append(int(pipe_jellyfish.stdout.readline().decode()))
-                out_line = process_counts(kmer_counts, sample_name, l[0])
-                if out_line:
-                    out_queue.put(out_line)
+    with gzip.open(ref_kmers, "rt") as in_fh:
+        for line in in_fh:
+            line = line.strip()
+            l = line.strip().split()
+            kmer_counts = list()
+            for k in l[1:]:
+                k += "\n"
+                pipe_jellyfish.stdin.write(k.encode())
+            pipe_jellyfish.stdin.flush()
+            for _ in l[1:]:
+                kmer_counts.append(int(pipe_jellyfish.stdout.readline().decode()))
+            out_line = process_counts(kmer_counts, sample_name, l[0])
+            if out_line:
+                out_queue.put(out_line)
     pipe_jellyfish.stdin.close()
     pipe_jellyfish.stdout.close()
     pipe_jellyfish.wait()
@@ -144,18 +140,6 @@ def ref_kmer_parser_worker(
 
 
 def main(**kwargs):
-    # if kwargs["pyspy"]:
-    #     subprocess.Popen(
-    #         [
-    #             "py-spy",
-    #             "record",
-    #             "-s",
-    #             "-o",
-    #             kwargs["pyspy_svg"],
-    #             "--pid",
-    #             str(os.getpid()),
-    #         ]
-    #     )
     logging.basicConfig(filename=kwargs["log_file"], filemode="w", level=logging.DEBUG)
     # open printing queue
     queue_out = queue.Queue()
@@ -191,6 +175,4 @@ if __name__ == "__main__":
         ref_kmers=snakemake.input.ref,
         sample_name=snakemake.wildcards.sample,
         out_file=snakemake.output[0],
-        # pyspy=snakemake.params.pyspy,
-        # pyspy_svg=snakemake.log.pyspy,
     )
