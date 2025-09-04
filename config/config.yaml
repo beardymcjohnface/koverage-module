@@ -37,7 +37,7 @@ koverage:
         report:
             "oras://quay.io/beardymcjohnface/koverage_report:0.0.1"
         numpy:
-            "oras://quay.io/beardymcjohnface/koverage_numpy:0.0.1"
+            "oras://quay.io/beardymcjohnface/koverage_numpy:0.0.2"
     envmodules:
         # FOR USE WITH --use-envmodules
         # THESE NEED TO BE AVAILABLE ON YOUR SYSTEM, UPDATE VERSIONS ACCORDINGLY

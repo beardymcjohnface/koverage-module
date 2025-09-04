@@ -1,22 +1,6 @@
-import glob
 import os
 
 from metasnek import fastq_finder, fasta_finder
-
-
-# Concatenate Snakemake's own log file with the master log file
-def copy_log_file():
-    files = glob.glob(os.path.join(".snakemake", "log", "*.snakemake.log"))
-    if not files:
-        return None
-    current_log = max(files, key=os.path.getmtime)
-    shell("cat " + current_log + " >> " + config["koverage"]["args"]["log_file"])
-
-onsuccess:
-    copy_log_file()
-
-onerror:
-    copy_log_file()
 
 
 # PARSE SAMPLES
