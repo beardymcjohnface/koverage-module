@@ -4,7 +4,9 @@ channels:
     - bioconda
     - defaults
 dependencies:
-  - python=3
+  - python==3.9
+  - datapane==0.17
+  - metasnek>=0.0.8
   - pandas
   - plotly
-  - datapane
+  - numpy

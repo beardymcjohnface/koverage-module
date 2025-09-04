@@ -36,6 +36,8 @@ koverage:
             "oras://quay.io/beardymcjohnface/koverage_jellyfish:0.0.1"
         report:
             "oras://quay.io/beardymcjohnface/koverage_report:0.0.1"
+        numpy:
+            "oras://quay.io/beardymcjohnface/koverage_numpy:0.0.1"
     envmodules:
         # FOR USE WITH --use-envmodules
         # THESE NEED TO BE AVAILABLE ON YOUR SYSTEM, UPDATE VERSIONS ACCORDINGLY
@@ -52,6 +54,8 @@ koverage:
             - "pandas"
             - "plotly"
             - "datapane"
+        numpy:
+            - "numpy"
     params:
         jellyfish:
             -C 

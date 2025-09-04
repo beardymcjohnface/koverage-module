@@ -93,6 +93,12 @@ rule koverage_sample_coverage:
     params:
         binwidth = config["koverage"]["args"]["bin_width"]
     threads: 1
+    conda:
+        os.path.join("..", "envs", "numpy.yaml")
+    container:
+        config["koverage"]["container"]["numpy"]
+    envmodules:
+        *config["koverage"]["envmodules"]["numpy"]
     log:
         err =os.path.join(config["koverage"]["args"]["log"], "sample_coverage.{sample}.err"),
     benchmark:

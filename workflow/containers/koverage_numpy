@@ -1,0 +1,6 @@
+Bootstrap: docker
+
+From: python:3.10
+
+%post
+    pip install numpy==2.2.6
