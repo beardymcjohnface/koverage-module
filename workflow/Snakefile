@@ -23,7 +23,7 @@ def copy_log_file():
     if not files:
         return None
     current_log = max(files, key=os.path.getmtime)
-    shell("cat " + current_log + " >> " + config["koverage"]["args"]["log_file"])
+    shell("cat " + current_log + " >> " + config["koverage"]["args"]["output_paths"]["koverage_log"])
 
 onsuccess:
     copy_log_file()

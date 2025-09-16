@@ -6,8 +6,8 @@ rule koverage_coverm_map_pe:
         ref = config["koverage"]["args"]["ref"],
         r1=lambda wildcards: config["koverage"]["samples"]["reads"][wildcards.sample]["R1"],
     output:
-        bam = os.path.join(config["koverage"]["args"]["temp"], "{sample}.bam"),
-        bai = os.path.join(config["koverage"]["args"]["temp"], "{sample}.bam.bai")
+        bam = os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}.bam"),
+        bai = os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}.bam.bai")
     params:
         r2 = lambda wildcards: config["koverage"]["samples"]["reads"][wildcards.sample]["R2"] if config["koverage"]["samples"]["reads"][wildcards.sample]["R2"] else "",
         minimap = config["koverage"]["params"]["minimap"],
@@ -23,9 +23,9 @@ rule koverage_coverm_map_pe:
     envmodules:
         *config["koverage"]["envmodules"]["minimap"]
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "coverm_map_pe.{sample}.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "coverm_map_pe.{sample}.txt")
     log:
-        os.path.join(config["koverage"]["args"]["log"], "coverm_map_pe.{sample}.err")
+        os.path.join(config["koverage"]["args"]["output_paths"]["log"], "coverm_map_pe.{sample}.err")
     shell:
         "{{ "
         "minimap2 "
@@ -48,9 +48,9 @@ rule koverage_coverm_map_pe:
 
 rule koverage_coverm_bam2counts:
     input:
-        os.path.join(config["koverage"]["args"]["temp"], "{sample}.bam")
+        os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}.bam")
     output:
-        os.path.join(config["koverage"]["args"]["temp"], "{sample}.cov")
+        os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}.cov")
     params:
         params = config["koverage"]["params"]["coverm"]
     conda:
@@ -60,9 +60,9 @@ rule koverage_coverm_bam2counts:
     envmodules:
         *config["koverage"]["envmodules"]["coverm"]
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"],"coverm_bam2counts.{sample}.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"],"coverm_bam2counts.{sample}.txt")
     log:
-        os.path.join(config["koverage"]["args"]["log"], "coverm_bam2counts.{sample}.err")
+        os.path.join(config["koverage"]["args"]["output_paths"]["log"], "coverm_bam2counts.{sample}.err")
     shell:
         "coverm contig "
             "-b {input} " 
@@ -73,12 +73,12 @@ rule koverage_coverm_bam2counts:
 
 rule koverage_coverm_combine:
     input:
-        expand(os.path.join(config["koverage"]["args"]["temp"], "{sample}.cov"), sample=config["koverage"]["samples"]["names"])
+        expand(os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}.cov"), sample=config["koverage"]["samples"]["names"])
     output:
-        os.path.join(config["koverage"]["args"]["result"], "sample_coverm_coverage.tsv")
+        os.path.join(config["koverage"]["args"]["output_paths"]["results"], "sample_coverm_coverage.tsv")
     params:
         samples = config["koverage"]["samples"]["names"],
-        dir = config["koverage"]["args"]["temp"]
+        dir = config["koverage"]["args"]["output_paths"]["temp"]
     run:
         with open(output[0], "w") as outfh:
             with open(input[0], "r") as infh:
@@ -96,17 +96,17 @@ rule koverage_coverm_combine:
 
 rule koverage_reneo_coverage:
     input:
-        expand(os.path.join(config["koverage"]["args"]["temp"],"{sample}.cov"),sample=config["koverage"]["samples"]["names"])
+        expand(os.path.join(config["koverage"]["args"]["output_paths"]["temp"],"{sample}.cov"),sample=config["koverage"]["samples"]["names"])
     output:
-        os.path.join(config["koverage"]["args"]["result"], "reneo.coverage.tsv")
+        os.path.join(config["koverage"]["args"]["output_paths"]["results"], "reneo.coverage.tsv")
     threads:
         config["resources"]["ram"]["cpu"]
     resources:
         **config["resources"]["ram"]
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"],"reneo_coverage.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"],"reneo_coverage.txt")
     log:
-        os.path.join(config["koverage"]["args"]["log"], "reneo_coverage.err")
+        os.path.join(config["koverage"]["args"]["output_paths"]["log"], "reneo_coverage.err")
     shell:
         ("for i in {input}; do "
             "tail -n+2 $i; "

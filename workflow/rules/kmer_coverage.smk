@@ -6,7 +6,7 @@ rule koverage_jellyfish_db:
     input:
         r1=lambda wildcards: config["koverage"]["samples"]["reads"][wildcards.sample]["R1"],
     output:
-        os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer"),
+        os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer"),
     threads:
         config["resources"]["med"]["cpu"]
     resources:
@@ -21,9 +21,9 @@ rule koverage_jellyfish_db:
     envmodules:
         *config["koverage"]["envmodules"]["jellyfish"]
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "jellyfish_db.{sample}.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "jellyfish_db.{sample}.txt")
     log:
-        os.path.join(config["koverage"]["args"]["log"], "jellyfish.{sample}.err")
+        os.path.join(config["koverage"]["args"]["output_paths"]["log"], "jellyfish.{sample}.err")
     shell:
         ("jellyfish count "
             "-m {params.kmer} "
@@ -50,9 +50,9 @@ rule koverage_ref_kmer_prep:
         kmin = config["koverage"]["args"]["kmer_min"],
         kmax = config["koverage"]["args"]["kmer_max"],
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "ref_kmer_prep.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "ref_kmer_prep.txt")
     log:
-        err = os.path.join(config["koverage"]["args"]["log"], "ref_kmer_prep.err"),
+        err = os.path.join(config["koverage"]["args"]["output_paths"]["log"], "ref_kmer_prep.err"),
     script:
         os.path.join("..", "scripts", "refSampleKmer.py")
 
@@ -61,9 +61,9 @@ rule koverage_kmer_screen:
     """Screen jellyfish database for ref kmers"""
     input:
         ref = config["koverage"]["args"]["refkmers"],
-        db = os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer")
+        db = os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer")
     output:
-        temp(os.path.join(config["koverage"]["args"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.gz"))
+        temp(os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.gz"))
     threads:
         config["resources"]["med"]["cpu"]
     resources:
@@ -73,9 +73,9 @@ rule koverage_kmer_screen:
     envmodules:
         *config["koverage"]["envmodules"]["jellyfish"]
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "kmer_screen.{sample}.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "kmer_screen.{sample}.txt")
     log:
-        err = os.path.join(config["koverage"]["args"]["log"], "kmer_screen.{sample}.err"),
+        err = os.path.join(config["koverage"]["args"]["output_paths"]["log"], "kmer_screen.{sample}.err"),
     script:
         os.path.join("..", "scripts", "kmerScreen.py")
 
@@ -85,7 +85,7 @@ rule koverage_all_sample_kmer_coverage:
     input:
         expand(
             os.path.join(
-                config["koverage"]["args"]["temp"],
+                config["koverage"]["args"]["output_paths"]["temp"],
                 "{sample}." + str(config["koverage"]["args"]["kmer_size"]) + "mer.kcov.gz"
             ),
             sample=config["koverage"]["samples"]["names"]
@@ -94,9 +94,9 @@ rule koverage_all_sample_kmer_coverage:
         config["koverage"]["args"]["samplekmers"]
     threads: 1
     log:
-        os.path.join(config["koverage"]["args"]["log"], "all_sample_kmer_coverage.err")
+        os.path.join(config["koverage"]["args"]["output_paths"]["log"], "all_sample_kmer_coverage.err")
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "all_sample_kmer_coverage.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "all_sample_kmer_coverage.txt")
     shell:
         ("{{ "
             "printf 'Sample\tContig\tSum\tMean\tMedian\tHitrate\tVariance\n' 2> {log}; "
@@ -112,8 +112,8 @@ rule koverage_combine_kmer_coverage:
         all_cov = config["koverage"]["args"]["allkmers"]
     threads: 1
     log:
-        err = os.path.join(config["koverage"]["args"]["log"], "combine_kmer_coverage.err"),
+        err = os.path.join(config["koverage"]["args"]["output_paths"]["log"], "combine_kmer_coverage.err"),
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "combine_kmer_coverage.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "combine_kmer_coverage.txt")
     script:
         os.path.join("..", "scripts", "combineKmerCoverage.py")

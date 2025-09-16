@@ -5,7 +5,7 @@ from metasnek import fasta_finder
 rule koverage_combine_fastas:
     """Combine the multiple ref fastas"""
     output:
-        os.path.join(config["koverage"]["args"]["temp"],"concatenated_refs.fasta")
+        os.path.join(config["koverage"]["args"]["output_paths"]["temp"],"concatenated_refs.fasta")
     params:
         ref_files = config["koverage"]["args"]["references"]
     localrule:

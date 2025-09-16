@@ -14,10 +14,10 @@ rule koverage_sample_tsv:
 rule koverage_report:
     """Generate html report for koverage"""
     input:
-        smpl = os.path.join(config["koverage"]["args"]["result"], "sample_coverage.tsv"),
-        all = os.path.join(config["koverage"]["args"]["result"], "all_coverage.tsv")
+        smpl = os.path.join(config["koverage"]["args"]["output_paths"]["results"], "sample_coverage.tsv"),
+        all = os.path.join(config["koverage"]["args"]["output_paths"]["results"], "all_coverage.tsv")
     output:
-        html = os.path.join(config["koverage"]["args"]["result"], "report.html")
+        html = os.path.join(config["koverage"]["args"]["output_paths"]["results"], "report.html")
     params:
         sample_cov_desc = config["koverage"]["report"]["map"]["sample_cov_desc"],
         all_cov_desc = config["koverage"]["report"]["map"]["all_cov_desc"],
@@ -32,16 +32,16 @@ rule koverage_report:
     envmodules:
         *config["koverage"]["envmodules"]["report"]
     log:
-        err = os.path.join(config["koverage"]["args"]["log"], "coverage_report.err"),
+        err = os.path.join(config["koverage"]["args"]["output_paths"]["log"], "coverage_report.err"),
     benchmark:
-        os.path.join(config["koverage"]["args"]["bench"], "coverage_report.txt")
+        os.path.join(config["koverage"]["args"]["output_paths"]["bench"], "coverage_report.txt")
     script:
         os.path.join("..", "scripts", "koverageReport.py")
 
 
 rule koverage_build_env:
     output:
-        os.path.join(config["koverage"]["args"]["temp"], "{env}.done")
+        os.path.join(config["koverage"]["args"]["output_paths"]["temp"], "{env}.done")
     conda:
         lambda wildcards: os.path.join("..", "envs", wildcards.env)
     shell:

@@ -3,6 +3,15 @@ import os
 from metasnek import fastq_finder, fasta_finder
 
 
+"""
+Expand output dir and file paths to include base output dir
+"""
+for output_file_path in config["koverage"]["args"]["output_paths"]:
+    config["koverage"]["args"]["output_paths"][output_file_path] =  os.path.join(
+        config["koverage"]["args"]["output"], config["koverage"]["args"]["output_paths"][output_file_path]
+    )
+
+
 # PARSE SAMPLES
 config["koverage"]["samples"] = dict()
 config["koverage"]["samples"]["reads"] = fastq_finder.parse_samples_to_dictionary(config["koverage"]["args"]["reads"])
@@ -20,23 +29,23 @@ config["koverage"]["targets"] = dict()
 
 if config["koverage"]["args"]["pafs"]:
     config["koverage"]["targets"]["pafs"] = expand(
-        os.path.join(config["koverage"]["args"]["paf_dir"],"{sample}.paf.gz"),
+        os.path.join(config["koverage"]["args"]["output_paths"]["paf"],"{sample}.paf.gz"),
         sample=config["koverage"]["samples"]["names"]
     )
 else:
     config["koverage"]["targets"]["pafs"] = []
 
 config["koverage"]["targets"]["coverage"] = [
-    os.path.join(config["koverage"]["args"]["result"], "sample_coverage.tsv"),
-    os.path.join(config["koverage"]["args"]["result"], "all_coverage.tsv"),
+    os.path.join(config["koverage"]["args"]["output_paths"]["results"], "sample_coverage.tsv"),
+    os.path.join(config["koverage"]["args"]["output_paths"]["results"], "all_coverage.tsv"),
 ]
 
 if config["koverage"]["args"]["report"]:
-    config["koverage"]["targets"]["coverage"].append(os.path.join(config["koverage"]["args"]["result"], "report.html"))
+    config["koverage"]["targets"]["coverage"].append(os.path.join(config["koverage"]["args"]["output_paths"]["results"], "report.html"))
 
 
 config["koverage"]["targets"]["coverm"] = [
-    os.path.join(config["koverage"]["args"]["result"], "sample_coverm_coverage.tsv")
+    os.path.join(config["koverage"]["args"]["output_paths"]["results"], "sample_coverm_coverage.tsv")
 ]
 
 config["koverage"]["targets"]["reports"] = [
@@ -46,14 +55,14 @@ config["koverage"]["targets"]["reports"] = [
 
 # KMER FILES
 config["koverage"]["args"]["refkmers"] = os.path.join(
-    config["koverage"]["args"]["temp"],
+    config["koverage"]["args"]["output_paths"]["temp"],
     os.path.basename(config["koverage"]["args"]["ref"]) + "." + str(config["koverage"]["args"]["kmer_size"]) + "mer.gz"
 )
 config["koverage"]["args"]["samplekmers"] = os.path.join(
-    config["koverage"]["args"]["result"], "sample_kmer_coverage." + str(config["koverage"]["args"]["kmer_size"]) + "mer.tsv.gz"
+    config["koverage"]["args"]["output_paths"]["results"], "sample_kmer_coverage." + str(config["koverage"]["args"]["kmer_size"]) + "mer.tsv.gz"
 )
 config["koverage"]["args"]["allkmers"] = os.path.join(
-    config["koverage"]["args"]["result"], "all_kmer_coverage." + str(config["koverage"]["args"]["kmer_size"]) + "mer.tsv.gz"
+    config["koverage"]["args"]["output_paths"]["results"], "all_kmer_coverage." + str(config["koverage"]["args"]["kmer_size"]) + "mer.tsv.gz"
 )
 
 config["koverage"]["targets"]["kmercov"] = [
@@ -67,4 +76,4 @@ config["koverage"]["targets"]["envs"] = []
 
 for filename in os.listdir(os.path.join(workflow.basedir, "envs")):
     if filename.endswith(".yaml") or filename.endswith(".yml"):
-        config["koverage"]["targets"]["envs"].append(os.path.join(config["koverage"]["args"]["temp"], filename + ".done"))
+        config["koverage"]["targets"]["envs"].append(os.path.join(config["koverage"]["args"]["output_paths"]["temp"], filename + ".done"))

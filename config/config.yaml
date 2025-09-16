@@ -9,15 +9,17 @@ resources:
         time: "04:00:00"
 koverage:
     args:
-        output: "koverage.out/"
-        result: "koverage.out/results/"
         reads: "test/reads/"
         ref: "test/ref.fa"
-        log: "koverage.out/logs/"
-        log_file: "koverage.out/koverage.log"
-        bench: "koverage.out/bench/"
-        temp: "koverage.out/temp/"
-        paf_dir: "koverage.out/pafs/"
+        output: "koverage.out/"
+        output_paths:
+            results: "results/"
+            reports: "reports/"
+            paf: "pafs/"
+            temp: "temp/"
+            log: "logs/"
+            bench: "benchmarks/"
+            koverage_log: "koverage.log"
         bin_width: 100
         kmer_max: 5000
         kmer_min: 50
