@@ -153,16 +153,14 @@ def build_mm2cmd(**kwargs):
         mm2cmd (list): minimap2 command for opening with subprocess
     """
 
-    mm2cmd = [
+    mm2cmd = ([
         "minimap2",
         "-t",
-        str(kwargs["threads"]),
-        "-x",
-        kwargs["minimap_mode"],
-        "--secondary=no",
+        str(kwargs["threads"])
+    ] + kwargs["minimap_mode"].split() + [
         kwargs["ref_idx"],
         kwargs["r1_file"],
-    ]
+    ])
 
     if kwargs["r2_file"] and kwargs["r2_file"].lower() not in ["none", "null", ""]:
         mm2cmd.append(kwargs["r2_file"])

@@ -10,6 +10,8 @@ rule koverage_coverm_map_pe:
         bai = os.path.join(config["koverage"]["args"]["temp"], "{sample}.bam.bai")
     params:
         r2 = lambda wildcards: config["koverage"]["samples"]["reads"][wildcards.sample]["R2"] if config["koverage"]["samples"]["reads"][wildcards.sample]["R2"] else "",
+        minimap = config["koverage"]["params"]["minimap"],
+        samtools = config["koverage"]["params"]["samtools_view"]
     threads:
         config["resources"]["med"]["cpu"]
     resources:
@@ -27,17 +29,17 @@ rule koverage_coverm_map_pe:
     shell:
         "{{ "
         "minimap2 "
+            "-a "
             "-t {threads} "
-            "-ax sr "
-            "--secondary=no "
             "{input.ref} "
             "{input.r1} "
             "{params.r2} "
+            "{params.minimap} "
         "| samtools sort "
             "-T {wildcards.sample} "
             "-@ {threads} - "
         "| samtools view "
-            "-bh -F 4 "
+            "{params.samtools} "
             "> {output.bam} ;"
         "samtools index "
             "{output.bam}; "

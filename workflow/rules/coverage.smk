@@ -66,7 +66,7 @@ rule koverage_raw_coverage:
         pafs = config["koverage"]["args"]["pafs"],
         paf_dir = config["koverage"]["args"]["paf_dir"],
         bin_width = config["koverage"]["args"]["bin_width"],
-        minimap = config["koverage"]["args"]["minimap"]
+        minimap = config["koverage"]["params"]["minimap"]
     conda:
         os.path.join("..", "envs", "minimap.yaml")
     container:

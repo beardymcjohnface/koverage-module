@@ -23,7 +23,6 @@ koverage:
         kmer_min: 50
         kmer_sample: 100
         kmer_size: 25
-        minimap: sr
         pafs: false
         report: true
         report_max_ctg: 1000
@@ -57,6 +56,10 @@ koverage:
         numpy:
             - "numpy"
     params:
+        minimap:
+            "-x sr --secondary=no "
+        samtools_view:
+            "-bh -F 4 "
         jellyfish:
             -C 
             -s 1G 
