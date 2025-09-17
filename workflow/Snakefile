@@ -9,6 +9,7 @@ configfile: os.path.join(workflow.basedir, '../', 'config', 'system_config.yaml'
 
 
 # Rules
+include: os.path.join("rules", "parse_samples.smk")
 include: os.path.join("rules", "preflight.smk")
 include: os.path.join("rules", "combine_refs.smk")
 include: os.path.join("rules", "coverage.smk")

@@ -1,6 +1,6 @@
 import os
 
-from metasnek import fastq_finder, fasta_finder
+from metasnek import fasta_finder
 
 
 """
@@ -12,19 +12,17 @@ for output_file_path in config["koverage"]["args"]["output_paths"]:
     )
 
 
-# PARSE SAMPLES
-config["koverage"]["samples"] = dict()
-config["koverage"]["samples"]["reads"] = fastq_finder.parse_samples_to_dictionary(config["koverage"]["args"]["reads"])
-config["koverage"]["samples"]["names"] = list(config["koverage"]["samples"]["reads"].keys())
-
-
-# PARSE REF(S)
+"""
+PARSE REF(S)
+"""
 config["koverage"]["args"]["references"] = fasta_finder.parse_fastas(config["koverage"]["args"]["ref"])
 if len(config["koverage"]["args"]["references"]) > 1:
     config["koverage"]["args"]["ref"] = os.path.join(config["koverage"]["args"]["temp"], "concatenated_refs.fasta")
 
 
-# TARGETS
+"""
+TARGETS
+"""
 config["koverage"]["targets"] = dict()
 
 if config["koverage"]["args"]["pafs"]:
@@ -53,7 +51,9 @@ config["koverage"]["targets"]["reports"] = [
 ]
 
 
-# KMER FILES
+"""
+KMER FILES
+"""
 config["koverage"]["args"]["refkmers"] = os.path.join(
     config["koverage"]["args"]["output_paths"]["temp"],
     os.path.basename(config["koverage"]["args"]["ref"]) + "." + str(config["koverage"]["args"]["kmer_size"]) + "mer.gz"
@@ -71,7 +71,9 @@ config["koverage"]["targets"]["kmercov"] = [
 ]
 
 
-# Add targets for pre-building the environments
+"""
+Add targets for pre-building the environments - TODO: delete if migrating to snk
+"""
 config["koverage"]["targets"]["envs"] = []
 
 for filename in os.listdir(os.path.join(workflow.basedir, "envs")):
